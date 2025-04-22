@@ -144,10 +144,10 @@ def store_news_data():
                 """,
                 (article["title"], article["timestamp"], article["weblink"], article["image"], article["tags"], article["summary"])
             )
-            article_class = categorize_article(article=article)
-            if article_class is not None:
-                news_train["Text"].append(article["summary"] + article["title"])
-                news_train["Category"].append(article_class)
+        article_class = categorize_article(article=article)
+        if article_class is not None:
+            news_train["Text"].append(article["summary"] + article["title"])
+            news_train["Category"].append(article_class)
     if len(news_train["Text"]) > 0:
         pd.DataFrame(news_train).to_csv("news_feed.csv",index=False)
     print(f"Inserted articles successfully")

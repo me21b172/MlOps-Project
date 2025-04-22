@@ -6,9 +6,9 @@ import uvicorn
 from fastapi import FastAPI, Request, Query
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from model.model import predict
-import pickle
 from prometheus_client import start_http_server, Counter
+import requests
+import json
 
 num_tags_feed = Counter("news_tags_feed","New news feed added",["tag"])
 app = FastAPI()
@@ -21,8 +21,26 @@ DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_NAME = os.environ.get("DB_NAME", "postgres")
 DB_USER = os.environ.get("DB_USER", "postgres")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "AnujS@003")
-with open('model\model_pkl' , 'rb') as f:
-    model = pickle.load(f)
+
+def predict(text):
+    data = {
+        "instances": [
+            {"text": text[0]}
+        ]
+    }
+
+    # data = {
+    #     "columns": ["text"],
+    #     "data": [text]
+    # }
+    response = requests.post(
+        url="http://127.0.0.1:5002/invocations",
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(data)
+    )
+    print(f"Response from prediction service: {response.status_code}, {response.json()}")
+    return response.json()["predictions"][0]
+
 # Function to connect to PostgreSQL
 def get_db_connection():
     try:
@@ -69,7 +87,7 @@ async def home(request: Request, date: str = Query(None), category: str= Query(N
     # Convert articles into dictionary format
     article_list = []
     for article in articles:
-        prediction = predict(model,[str(article[1])+str(article[5])])[0]
+        prediction = predict([str(article[1])+str(article[5])])
         num_tags_feed.labels(tag=prediction).inc()
         if prediction == category or category == "All":
             article_dict = {

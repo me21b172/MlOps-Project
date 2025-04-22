@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Latest News{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="headlines">
+        <h2 class="section-title">Top Headlines</h2>
+        <div class="headline-grid">
+            {% for article in headline_articles[:3] %}
+            <div class="headline-card">
+                {% if article.image %}
+                <div class="headline-image">
+                    <img src="{{ article.image }}" alt="{{ article.title }}">
+                </div>
+                {% endif %}
+                <div class="headline-content">
+                    <span class="category-badge {{ article.tag }}">{{ article.tag|title }}</span>
+                    <h3><a href="{{ article.weblink }}" target="_blank">{{ article.title }}</a></h3>
+                    {% if article.summary %}
+                    <p class="summary">{{ article.summary }}</p>
+                    {% endif %}
+                    <div class="article-meta">
+                        <span class="source">{{ article.source }}</span>
+                        <span class="timestamp">{{ article.timestamp }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% for category, articles in categorized_articles.items() %}
+    {% if articles %}
+    <section class="category-section">
+        <h2 class="section-title">{{ category|title }}</h2>
+        <div class="news-grid">
+            {% for article in articles[:6] %}
+            <div class="news-card {% if loop.first %}featured{% endif %}">
+                {% if article.image %}
+                <div class="news-image">
+                    <img src="{{ article.image }}" alt="{{ article.title }}">
+                </div>
+                {% endif %}
+                <div class="news-content">
+                    <span class="category-badge {{ article.tag }}">{{ article.tag|title }}</span>
+                    <h3><a href="{{ article.weblink }}" target="_blank">{{ article.title }}</a></h3>
+                    {% if article.summary %}
+                    <p class="summary">{{ article.summary }}</p>
+                    {% endif %}
+                    <div class="article-meta">
+                        <span class="source">{{ article.source }}</span>
+                        <span class="timestamp">{{ article.timestamp }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="see-more">
+            <a href="/category/{{ category }}">See more {{ category }} news →</a>
+        </div>
+    </section>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,2 +1,6 @@
 model_env
 __pycache__
+mlartifacts
+mlruns
+*.csv
+*.json
