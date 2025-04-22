@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Date</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 50px;">
+
+    <h1 style="color: #333; margin-bottom: 20px;">📅 Select a Date to View News</h1>
+
+    <!-- Date Picker Form -->
+    <form action="/news" method="get" 
+          style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block;">
+        
+        <label for="date" style="font-size: 18px; color: #555; font-weight: bold;">Choose Date:</label>
+        <input type="date" id="date" name="date" required 
+               style="margin: 10px 0; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px;">
+        
+        <br>
+        <label for="category" style="font-size: 18px; color: #555; font-weight: bold;">Select Category:</label>
+        <select id="category" name="category" required 
+                style="margin: 10px 0; padding: 10px; font-size: 16px; border: 1px solid #ccc; border-radius: 5px; width: 100%;">
+            <option value="" disabled selected>Select a category</option>
+            <option value="All">All</option>
+            <option value="sport">Sports</option>
+            <option value="business">Business</option>
+            <option value="tech">Tech</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="politics">Politics</option>
+        </select>
+        <br>
+        <!-- Submit Button -->
+        <button type="submit" 
+                style="background-color: #28a745; 
+                       color: white; 
+                       border: none; 
+                       padding: 12px 20px; 
+                       font-size: 16px; 
+                       border-radius: 5px; 
+                       cursor: pointer;
+                       transition: 0.3s;">
+            📰 View News
+        </button>
+
+    </form>
+
+</body>
+</html>

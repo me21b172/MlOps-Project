@@ -1,0 +1,9 @@
+FROM python:3.9
+
+WORKDIR /feed_parser
+
+COPY . .
+
+RUN pip install -r requirements.txt
+
+CMD [ "python", "extract_news/extract_news_data.py" ]

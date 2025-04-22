@@ -1,0 +1,4 @@
+Model
+-tuned only for batch size, lr, number of hidden layers
+data
+-stored in text, category format
