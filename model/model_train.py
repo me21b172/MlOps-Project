@@ -87,8 +87,10 @@ def train_model(model,data,lr,batch_size,num_epoch):
 
                 epoch_preds.extend(preds.cpu().numpy())
                 epoch_labels.extend(labels.cpu().numpy())
-            val_loss /= len(val_loader)
-            accuracy = correct_cnt / total_cnt
+            if len(val_loader) != 0:
+                val_loss /= len(val_loader)
+            if total_cnt != 0:
+                accuracy = correct_cnt / total_cnt
             if accuracy > best_val_accuracy:
                 best_val_accuracy = accuracy
                 best_preds = epoch_preds.copy()  # Store best epoch's predictions

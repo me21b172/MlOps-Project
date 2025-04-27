@@ -18,7 +18,6 @@ params = dvc.api.params_show()
 # Convert to dictionaries
 DEFAULT_CONFIG = params["extract_data"]["configuration"]
 FEEDS = params["extract_data"]["feeds"]
-CATEGORY_PATTERNS = params["extract_data"]["category_patterns"]
 
 # DEFAULT_CONFIG = params["extract_data"]["configuration"]
 # FEEDS = params["extract_data"]["FEEDS"]
@@ -70,15 +69,6 @@ def download_and_process_image(url):
     except Exception as e:
         print(f"Error processing image from {url}: {e}")
         return None
-
-def categorize_article(article):
-    '''Categorize article based on title, tags, and summary'''
-    text_to_check = f"{article['title']} {' '.join(article['tags'])} {article['summary']}".lower()
-    
-    for category, pattern in CATEGORY_PATTERNS.items():
-        if re.search(pattern, text_to_check, re.IGNORECASE):
-            return category
-    return None
 
 def extract_news_data():
     news_data = []
@@ -134,7 +124,6 @@ def store_news_data():
         );
         """
     )
-    news_train = {"Text":[],"Category":[]}
     for article in news_data:
         if is_news_in_database(cur=cursor,news=article):
             cursor.execute(
@@ -144,12 +133,6 @@ def store_news_data():
                 """,
                 (article["title"], article["timestamp"], article["weblink"], article["image"], article["tags"], article["summary"])
             )
-        article_class = categorize_article(article=article)
-        if article_class is not None:
-            news_train["Text"].append(article["summary"] + article["title"])
-            news_train["Category"].append(article_class)
-    if len(news_train["Text"]) > 0:
-        pd.DataFrame(news_train).to_csv("news_feed.csv",index=False)
     print(f"Inserted articles successfully")
     conn.commit()
     cursor.close()

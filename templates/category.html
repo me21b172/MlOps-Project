@@ -20,6 +20,19 @@
                     <span class="source">{{ articles[0].source }}</span>
                     <span class="timestamp">{{ articles[0].timestamp }}</span>
                 </div>
+                <div class="feedback-section">
+                    <small class="feedback-label">Help improve classification:</small>
+                    <div class="feedback-buttons">                
+                        {% for category in categories %}
+                        <button class="feedback-btn" 
+                                
+                                data-text="{{ articles[0].title }} {{ articles[0].summary }}"
+                                data-category="{{ category }}">
+                            {{ category|title }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
@@ -40,10 +53,70 @@
                         <span class="source">{{ article.source }}</span>
                         <span class="timestamp">{{ article.timestamp }}</span>
                     </div>
+    
+                    <!-- FEEDBACK SECTION FOR EACH ARTICLE -->
+                    <div class="feedback-section">
+                        <small class="feedback-label">Help improve classification:</small>
+                        <div class="feedback-buttons">                    
+                            {% for category in categories %}
+                            <button class="feedback-btn" 
+                                    
+                                    data-text="{{ article.title }} {{ article.summary }}"
+                                    data-category="{{ category }}">
+                                {{ category|title }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- END FEEDBACK -->
+    
                 </div>
             </div>
             {% endfor %}
         </div>
     </section>
+    
 </div>
+<script>
+    document.querySelectorAll('.feedback-section').forEach(section => {
+        const buttons = section.querySelectorAll('.feedback-btn');
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                const text = this.dataset.text;
+                const category = this.dataset.category;
+                
+                // Disable all buttons immediately
+                buttons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.6';
+                    btn.style.cursor = 'not-allowed';
+                });
+    
+                fetch('/submit-feedback', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        category: category
+                    })
+                }).then(response => response.json())
+                  .then(data => {
+                      if (data.status === 'success') {
+                          section.innerHTML = '<small class="feedback-thankyou">Thank you for your feedback!</small>';
+                      } else {
+                          section.innerHTML = '<small class="feedback-error">Error submitting feedback.</small>';
+                      }
+                  }).catch(error => {
+                      section.innerHTML = '<small class="feedback-error">Error submitting feedback.</small>';
+                  });
+            });
+        });
+    });
+</script>
+    
+
+
 {% endblock %}

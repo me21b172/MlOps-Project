@@ -10,6 +10,12 @@ from fastapi.templating import Jinja2Templates
 from prometheus_client import start_http_server, Counter
 import requests
 import json
+from fastapi import Body
+import csv
+import hashlib
+from pathlib import Path
+
+FEEDBACK_CSV = "news_feed.csv"
 
 # Initialize counters for metrics
 num_tags_feed = Counter("news_tags_feed", "New news feed added", ["tag"])
@@ -21,6 +27,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Set up Jinja2 templates
 templates = Jinja2Templates(directory="templates")
 
+if not Path(FEEDBACK_CSV).exists():
+    with open(FEEDBACK_CSV, "w", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["Text", "Category"])
 # Database connection configuration
 DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_NAME = os.environ.get("DB_NAME", "postgres")
@@ -185,6 +195,42 @@ async def category_page(request: Request, category_name: str):
             "articles": article_list
         }
     )
+
+@app.post("/submit-feedback")
+async def submit_feedback(payload: dict = Body(...)):
+    try:
+        text = payload.get("text", "").strip()
+        category = payload.get("category", "").lower().strip()
+        
+        if not text or not category:
+            return {"status": "error"}
+        
+        # Create content hash
+        content_hash = hashlib.md5(f"{text}-{category}".encode()).hexdigest()
+        
+        # Check for duplicates
+        duplicate = False
+        if Path(FEEDBACK_CSV).exists():
+            with open(FEEDBACK_CSV, "r", encoding="utf-8") as f:
+                reader = csv.reader(f)
+                next(reader)  # Skip header
+                for row in reader:
+                    if len(row) >= 2:
+                        existing_hash = hashlib.md5(f"{row[0]}-{row[1]}".encode()).hexdigest()
+                        if existing_hash == content_hash:
+                            duplicate = True
+                            break
+        
+        if not duplicate:
+            with open(FEEDBACK_CSV, "a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow([text, category])
+        
+        return {"status": "success"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
 
 if __name__ == "__main__":
     start_http_server(18001)
