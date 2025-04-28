@@ -41,8 +41,6 @@ stages:
       - extract_data.configuration
       - extract_data.feeds
       - extract_data.category_patterns
-    outs:
-      - news_feed.csv
 
   extract_best_model:
     cmd: python model/register_best_model.py
@@ -53,7 +51,7 @@ stages:
       - model.epochs
       - model.runs
     deps:
-      - model/BBC News Train.csv
+      - data/BBC News Train.csv
     outs:
       - mlartifacts
       - mlruns
@@ -63,7 +61,6 @@ stages:
     deps:
       - mlartifacts
       - mlruns
-      - news_feed.csv
     metrics:
       - metrics/classification_report.json
       - metrics/training_history.json
