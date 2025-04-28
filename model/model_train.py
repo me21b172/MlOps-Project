@@ -174,7 +174,7 @@ def build_model_train_model(num_neurons = 512, lr=1e-2, batch_size = 32, num_epo
     for param in model.classifier.parameters():
         param.requires_grad = True
 
-    data = pd.read_csv("model/BBC News Train.csv")
+    data = pd.read_csv("data/BBC News Train.csv")
     data = pd.concat([data["Text"],data["Category"]],axis=1)
     data['Category'] = data['Category'].map(label_map)
     predictions = train_model(model,data=data,lr=lr,batch_size=batch_size,num_epoch=num_epochs)
@@ -210,7 +210,7 @@ if __name__ =="__main__":
     for param in model.classifier.parameters():
         param.requires_grad = True
 
-    data = pd.read_csv("model/BBC News Train.csv")
+    data = pd.read_csv("data/BBC News Train.csv")
     data = pd.concat([data["Text"],data["Category"]],axis=1)
     data['Category'] = data['Category'].map(label_map)
     train_model(model,data=data,lr=1e-2,batch_size=32,num_epoch=5)

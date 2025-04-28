@@ -15,7 +15,7 @@ import csv
 import hashlib
 from pathlib import Path
 
-FEEDBACK_CSV = "news_feed.csv"
+FEEDBACK_CSV = "/data/news_feed.csv"
 
 # Initialize counters for metrics
 num_tags_feed = Counter("news_tags_feed", "New news feed added", ["tag"])
@@ -49,7 +49,7 @@ def predict(text):
     }
     
     response = requests.post(
-        url="http://127.0.0.1:5002/invocations",
+        url=os.getenv("MODEL_SERVER_URL", "http://localhost:5002"),
         headers={"Content-Type": "application/json"},
         data=json.dumps(data)
     )
@@ -233,5 +233,5 @@ async def submit_feedback(payload: dict = Body(...)):
 
 
 if __name__ == "__main__":
-    start_http_server(18001)
+    # start_http_server(18001)
     uvicorn.run(app, host="0.0.0.0", port=8000)

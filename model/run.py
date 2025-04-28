@@ -40,6 +40,6 @@ if __name__ == "__main__":
     # Start the data pipeline in a separate thread
     while(True):
         data = pd.read_csv("news_feed.csv")
-        if len(data) > 2:
+        if len(data) > 10:
             start_datapipeline()
         time.sleep(600)

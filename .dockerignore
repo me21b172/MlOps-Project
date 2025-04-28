@@ -1,0 +1,10 @@
+mlruns/
+mlartifacts/
+model_env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+.env
+.git

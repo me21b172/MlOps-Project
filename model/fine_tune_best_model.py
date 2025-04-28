@@ -46,7 +46,7 @@ def is_port_in_use(port: int) -> bool:
 
 def kill_process_on_port(port):
     try:
-        # Use netstat and taskkill for Windows
+        # Find the PID using netstat
         result = subprocess.run(
             f'netstat -ano | findstr :{port}',
             shell=True,
@@ -59,22 +59,27 @@ def kill_process_on_port(port):
             lines = output.strip().split("\n")
             for line in lines:
                 parts = line.split()
-                pid = parts[-1]
-                print(f"Killing process {pid} on port {port}")
-                subprocess.run(f'taskkill /PID {pid} /F', shell=True)
+                if len(parts) >= 5:
+                    pid = parts[-1]
+                    if pid != "0":  # Skip critical system PID 0
+                        print(f"Killing process {pid} on port {port}")
+                        subprocess.run(f'taskkill /PID {pid} /F', shell=True)
+                    else:
+                        print(f"Skipping PID 0 (system process) on port {port}")
         else:
             print(f"No process found on port {port}")
     except Exception as e:
         print(f"Error: {e}")
 
 
+
 def extract_data():
-    data = pd.read_csv(f"news_feed.csv")
+    data = pd.read_csv(f"data/news_feed.csv")
     data = pd.concat([data["Text"],data["Category"]],axis=1)
     data['Category'] = data['Category'].map(model_train.label_map)
     kill_process_on_port(5002)
-    # df = pd.read_csv("news_feed.csv")
-    # df.head(0).to_csv("news_feed.csv", index=False)
+    # df = pd.read_csv("data/news_feed.csv")
+    # df.head(0).to_csv("data/news_feed.csv", index=False)
     return data
 
 def extract_params(latest_version):
@@ -175,11 +180,11 @@ def run_mlflow_server():
     process.wait()  # Blocks until server terminates
 
 if __name__ == "__main__":
-    kill_process_on_port(5002)
+    # kill_process_on_port(5002)
     main()
     print(get_latest_model_version().version)
     print(get_latest_model_version().run_id)
     mlflow_server = expose_best_model(get_latest_model_version())
     print(f"MLflow server started with PID: {mlflow_server.pid}")
-    df = pd.read_csv("news_feed.csv")
-    df.head(0).to_csv("news_feed.csv", index=False)
+    df = pd.read_csv("data/news_feed.csv")
+    df.head(0).to_csv("data/news_feed.csv", index=False)

@@ -1,41 +1,28 @@
+networks:  # Networks must be defined FIRST
+  app-network:
+    driver: bridge
+
 services:
-  postgres:
-    image: postgres:15
-    container_name: rss_db
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: rss_user
-      POSTGRES_PASSWORD: rss_password
-      POSTGRES_DB: rss_feed
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./initialisation:/docker-entrypoint-initdb.d
-  data_extract:
-    build: 
-      context: .
-      dockerfile: Dockerfile.db
-    container_name: data_extract
-    restart: unless-stopped
-    depends_on:
-      - postgres
-    environment:
-      DB_HOST: "postgres"
-      DB_NAME: "rss_feed"
-      DB_USER: "rss_user"
-      DB_PASSWORD: "rss_password"
-  
   display_ui:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.app
     container_name: display_ui
     restart: unless-stopped
-    depends_on:
-      - data_extract
+    volumes:
+      - ./data:/data
+      - ./application.py:/app/application.py
     environment:
-      DB_HOST: "postgres"
-      DB_NAME: "rss_feed"
-      DB_USER: "rss_user"
-      DB_PASSWORD: "rss_password"
+      DB_HOST: "host.docker.internal"
+      DB_PORT: "5432"
+      DB_NAME: "postgres"
+      DB_USER: "postgres"
+      DB_PASSWORD: "AnujS@003"
+      PYTHONUNBUFFERED: "1"
+      MODEL_SERVER_URL: "http://host.docker.internal:5002"
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network  # Now properly references the defined network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:8000/ || exit 1"]
