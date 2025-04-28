@@ -31,14 +31,14 @@ stages:
   extract_best_model:
     cmd: python model/register_best_model.py
     deps:
-    - path: model/BBC News Train.csv
+    - path: data/BBC News Train.csv
       hash: md5
       md5: 53d0cfd05cbadfe6ed367c633294f967
       size: 3351206
     params:
       params.yaml:
         model.batch_size:
-        - 32
+        - 50
         - 64
         model.epochs:
         - 1
@@ -54,37 +54,33 @@ stages:
     outs:
     - path: mlartifacts
       hash: md5
-      md5: f7009d2b734c386ce404c4a12e3297c6.dir
-      size: 538917774
+      md5: 4dbf861ed55b58b86bddab555bc2039b.dir
+      size: 537332622
       nfiles: 17
     - path: mlruns
       hash: md5
-      md5: d9047efa02a3436aebda9e86bf2ad2dd.dir
-      size: 3267
+      md5: ce16743656c4b42e15ffde03bafdf851.dir
+      size: 3265
       nfiles: 28
   fine_tune_best_model:
     cmd: python model/fine_tune_best_model.py
     deps:
     - path: mlartifacts
       hash: md5
-      md5: c6f4ad242569282955b8e1e234afed04.dir
-      size: 1078304022
+      md5: 1343b753e75156b54864825c8eeef49d.dir
+      size: 1075133718
       nfiles: 34
     - path: mlruns
       hash: md5
-      md5: afbc84be0aa94628446a5ff32765e042.dir
-      size: 6030
+      md5: 61a97817b58b186d3b788b7c44353a7d.dir
+      size: 6011
       nfiles: 48
-    - path: news_feed.csv
-      hash: md5
-      md5: cfd9aee681375fd20aacb54ac4f27206
-      size: 53573
     outs:
     - path: metrics/classification_report.json
       hash: md5
-      md5: b3574522bfc89c2b0cf6ff5cb87960b6
-      size: 924
+      md5: 1b727a082a50aad0ec3c238aaf660b95
+      size: 782
     - path: metrics/training_history.json
       hash: md5
-      md5: 72379926c7e8e919329262e843a9024a
-      size: 104
+      md5: bce99738c7c16636fbb2660e3fbe3589
+      size: 88

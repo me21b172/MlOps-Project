@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from prometheus_client import start_http_server, Counter
+from prometheus_client import start_http_server, Counter, Gauge
 import requests
 import json
 from fastapi import Body
@@ -18,7 +18,9 @@ from pathlib import Path
 FEEDBACK_CSV = "/data/news_feed.csv"
 
 # Initialize counters for metrics
-num_tags_feed = Counter("news_tags_feed", "New news feed added", ["tag"])
+counter = Counter('api_call_counter', 'number of times that API is called', ['endpoint', 'client'])
+num_tags_feed = Gauge('num_tags_feed', 'Number of tags predicted', ['tag'])
+
 app = FastAPI()
 
 # Mount static files
@@ -49,7 +51,8 @@ def predict(text):
     }
     
     response = requests.post(
-        url=os.getenv("MODEL_SERVER_URL", "http://localhost:5002"),
+        url=os.getenv("MODEL_SERVER_URL", "http://localhost:5002/invocations"),
+        # url = "http://host.docker.internal:5002/invocations",
         headers={"Content-Type": "application/json"},
         data=json.dumps(data)
     )
@@ -74,6 +77,7 @@ def get_db_connection():
 async def home(request: Request):
     """Home page - shows headlines from all categories"""
     conn = get_db_connection()
+    counter.labels(endpoint='/make_cpu_busy', client=request.client.host).inc()
     if conn is None:
         return HTMLResponse(content="Error connecting to the database.", status_code=500)
 
@@ -86,7 +90,7 @@ async def home(request: Request):
         FROM articles 
         WHERE publication_timestamp >= %s
         ORDER BY image IS NULL, publication_timestamp DESC
-        LIMIT 100;
+        LIMIT 200;
         """, (datetime.now() - timedelta(days=7),))
     
     articles = cursor.fetchall()
@@ -95,10 +99,11 @@ async def home(request: Request):
 
     # Process articles
     article_list = []
+    predictions =  {'business': 0, 'entertainment': 0, 'politics': 0, 'sport': 0, 'tech': 0}
     for article in articles:
         prediction = predict([str(article[1])+str(article[5])])
-        num_tags_feed.labels(tag=prediction).inc()
-        
+        # num_tags_feed.labels(tag=prediction).inc()
+        predictions[prediction] += 1 
         article_dict = {
             "id": article[0],
             "title": article[1],
@@ -122,6 +127,8 @@ async def home(request: Request):
         if article["tag"] in categorized_articles:
             categorized_articles[article["tag"]].append(article)
     
+    for key in predictions.keys():
+        num_tags_feed.labels(tag=key).set(predictions[key])
     # Select headlines - prioritize articles with images
     headline_candidates = [a for a in article_list if a["image"]]
     headline_articles = headline_candidates[:5] if len(headline_candidates) >= 3 else article_list[:5]
@@ -155,7 +162,7 @@ async def category_page(request: Request, category_name: str):
         FROM articles 
         WHERE publication_timestamp >= %s
         ORDER BY publication_timestamp DESC
-        LIMIT 100;
+        LIMIT 200;
         """, (datetime.now() - timedelta(days=7),))
     
     articles = cursor.fetchall()
@@ -233,5 +240,5 @@ async def submit_feedback(payload: dict = Body(...)):
 
 
 if __name__ == "__main__":
-    # start_http_server(18001)
+    start_http_server(18001)
     uvicorn.run(app, host="0.0.0.0", port=8000)
