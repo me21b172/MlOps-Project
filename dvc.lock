@@ -5,7 +5,7 @@ stages:
     params:
       params.yaml:
         extract_data.category_patterns:
-          sport: \b(?:sport|sports|cricket|football|tennis|olympics)\b
+          sport: \b(?:sport|sports|cricket|football|tennis)\b
           tech: \b(?:tech|technology|AI|artificial intelligence)\b
           entertainment: \b(?:entertainment|movie|bollywood|hollywood|actor|actress)\b
           business: \b(?:business|economy|market|stock|finance)\b
@@ -23,11 +23,6 @@ stages:
           Economic Times: https://economictimes.indiatimes.com/rssfeedstopstories.cms
           India Today: https://www.indiatoday.in/rss/home
           NDTV: https://feeds.feedburner.com/ndtvnews-top-stories
-    outs:
-    - path: news_feed.csv
-      hash: md5
-      md5: cfd9aee681375fd20aacb54ac4f27206
-      size: 53573
   extract_best_model:
     cmd: python model/register_best_model.py
     deps:
@@ -67,20 +62,20 @@ stages:
     deps:
     - path: mlartifacts
       hash: md5
-      md5: 1343b753e75156b54864825c8eeef49d.dir
+      md5: cf39243d060059bbe01cf4640bdc19bb.dir
       size: 1075133718
       nfiles: 34
     - path: mlruns
       hash: md5
-      md5: 61a97817b58b186d3b788b7c44353a7d.dir
+      md5: 8cc1ddad18d26e77a3d84f0664fb17e4.dir
       size: 6011
       nfiles: 48
     outs:
     - path: metrics/classification_report.json
       hash: md5
-      md5: 1b727a082a50aad0ec3c238aaf660b95
+      md5: 2742c129146bcdf35f91aacfabdec2b9
       size: 782
     - path: metrics/training_history.json
       hash: md5
-      md5: bce99738c7c16636fbb2660e3fbe3589
-      size: 88
+      md5: 3b602bc721b227263b07f9f625b15edd
+      size: 89

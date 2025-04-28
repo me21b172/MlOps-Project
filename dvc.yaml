@@ -1,39 +1,3 @@
-# stages:
-#   extract_data:
-#     cmd: python model/extract_news_data.py
-#     params:
-#       - extract_data.extract_data_configuration
-#       - extract_data.extract_data_FEEDS
-#       - extract_data.extract_data_CATEGORY_PATTERNS
-
-#     outs:
-#       - news_feed.csv
-
-#   extract_best_model:
-#     cmd: python model/register_best_model.py
-#     params:
-#       - model.num_neurons
-#       - model.lr
-#       - model.batch_size
-#       - model.epochs
-#       - model.runs
-#     deps:
-#       - model/BBC News Train.csv
-#     outs:
-#       - mlartifacts
-#       - mlruns
-
-#   fine_tune_best_model:
-#     cmd: python model/fine_tune_best_model.py
-#     deps:
-#       - mlartifacts
-#       - mlruns
-#       - news_feed.csv
-#     metrics:
-#       - metrics/classification_report.json
-#       - metrics/training_history.json
-
-
 stages:
   extract_data:
     cmd: python model/extract_news_data.py
@@ -52,15 +16,12 @@ stages:
       - model.runs
     deps:
       - data/BBC News Train.csv
-    outs:
-      - mlartifacts
-      - mlruns
 
   fine_tune_best_model:
     cmd: python model/fine_tune_best_model.py
     deps:
       - mlartifacts
-      - mlruns
+      - data/news_feed.csv
     metrics:
       - metrics/classification_report.json
       - metrics/training_history.json

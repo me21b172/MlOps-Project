@@ -32,7 +32,7 @@ extract_data:
     "India Today": "https://www.indiatoday.in/rss/home"
     "NDTV": "https://feeds.feedburner.com/ndtvnews-top-stories"
   category_patterns:
-    sport: \b(?:sport|sports|cricket|football|tennis|olympics)\b
+    sport: \b(?:sport|sports|cricket|football|tennis)\b
     tech: \b(?:tech|technology|AI|artificial intelligence)\b
     entertainment: \b(?:entertainment|movie|bollywood|hollywood|actor|actress)\b
     business: \b(?:business|economy|market|stock|finance)\b
