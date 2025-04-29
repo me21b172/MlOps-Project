@@ -1,39 +1,30 @@
-# model:
-#   num_neurons:  [128, 256, 512]
-#   lr: [1e-4, 1e-3, 1e-2]
-#   batch_size: [32,64]
-#   epochs: [5]
-#   runs: 3
-
-# extract_data:
-#   extract_data_configuration: "database=postgres,user=postgres,host=localhost,password=AnujS@003,port=5432"
-#   extract_data_FEEDS: "Times Of India=https://timesofindia.indiatimes.com/rssfeeds/1221656.cms,TOI=https://timesofindia.indiatimes.com/rssfeedstopstories.cms,The Hindu=https://www.thehindu.com/news/national/?service=rss,Economic Times=https://economictimes.indiatimes.com/rssfeedstopstories.cms,India Today=https://www.indiatoday.in/rss/home,NDTV=https://feeds.feedburner.com/ndtvnews-top-stories"
-#   extract_data_CATEGORY_PATTERNS: "sport=\\b(?:sport|sports|cricket|football|tennis|olympics)\\b,tech=\\b(?:tech|technology|AI|artificial intelligence)\\b,entertainment=\\b(?:entertainment|movie|bollywood|hollywood|actor|actress)\\b,business=\\b(?:business|economy|market|stock|finance)\\b,politics=\\b(?:politics|election|minister|government|parliament)\\b"
-
 model:
-  num_neurons: [64, 256, 512]
+  num_neurons: [64, 128, 256]
   lr: [1e-4, 1e-3, 1e-2]
-  batch_size: [50, 64]
-  epochs: [1]
-  runs: 1
+  batch_size: [32, 64]
+  epochs: [3]
+  runs: 8
 
 extract_data:
   configuration:
-    database: "postgres"
-    user: "postgres"
-    host: "localhost"
-    password: "AnujS@003"
+    database: postgres
+    user: postgres
+    host: localhost
+    password: AnujS@003
     port: 5432
   feeds:
-    "Times Of India": "https://timesofindia.indiatimes.com/rssfeeds/1221656.cms"
-    "TOI": "https://timesofindia.indiatimes.com/rssfeedstopstories.cms"
-    "The Hindu": "https://www.thehindu.com/news/national/?service=rss"
-    "Economic Times": "https://economictimes.indiatimes.com/rssfeedstopstories.cms"
-    "India Today": "https://www.indiatoday.in/rss/home"
-    "NDTV": "https://feeds.feedburner.com/ndtvnews-top-stories"
+    Times Of India: https://timesofindia.indiatimes.com/rssfeeds/1221656.cms
+    TOI: https://timesofindia.indiatimes.com/rssfeedstopstories.cms
+    The Hindu: https://www.thehindu.com/news/national/?service=rss
+    Economic Times: https://economictimes.indiatimes.com/rssfeedstopstories.cms
+    India Today: https://www.indiatoday.in/rss/home
+    NDTV: https://feeds.feedburner.com/ndtvnews-top-stories
   category_patterns:
-    sport: \b(?:sport|sports|cricket|football|tennis)\b
+    sport: \b(?:sport|sports|cricket|football)\b
     tech: \b(?:tech|technology|AI|artificial intelligence)\b
     entertainment: \b(?:entertainment|movie|bollywood|hollywood|actor|actress)\b
     business: \b(?:business|economy|market|stock|finance)\b
     politics: \b(?:politics|election|minister|government|parliament)\b
+
+data:
+  date: '2025-04-29'

@@ -3,7 +3,11 @@ import atexit
 import time
 from threading import Thread
 import pandas as pd
+from ruamel.yaml import YAML
+from datetime import date
 
+yaml = YAML()
+file_path = "params.yaml"
 pipeline_process = None
 
 def run_mlflow_server():
@@ -30,6 +34,11 @@ def start_datapipeline():
 
 
 if __name__ == "__main__":
+    with open(file_path,"r") as f:
+        data = yaml.load(f)
+    data["data"]["date"] = str(date.today())
+    with open(file_path, "w") as f:
+        yaml.dump(data, f)
     # Start in dedicated thread
     run_mlflow_server()
     time.sleep(5)  # Give server time to start
@@ -37,6 +46,6 @@ if __name__ == "__main__":
     # Start the data pipeline in a separate thread
     while(True):
         data = pd.read_csv("data/news_feed.csv")
-        if len(data) > 2:
+        if len(data) > 3:
             start_datapipeline()
-        time.sleep(400)
+        time.sleep(600)

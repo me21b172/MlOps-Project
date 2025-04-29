@@ -5,7 +5,7 @@ stages:
     params:
       params.yaml:
         extract_data.category_patterns:
-          sport: \b(?:sport|sports|cricket|football|tennis)\b
+          sport: \b(?:sport|sports|cricket|football)\b
           tech: \b(?:tech|technology|AI|artificial intelligence)\b
           entertainment: \b(?:entertainment|movie|bollywood|hollywood|actor|actress)\b
           business: \b(?:business|economy|market|stock|finance)\b
@@ -42,40 +42,28 @@ stages:
         - 0.001
         - 0.01
         model.num_neurons:
-        - 64
+        - 48
         - 256
         - 512
         model.runs: 1
-    outs:
-    - path: mlartifacts
-      hash: md5
-      md5: 4dbf861ed55b58b86bddab555bc2039b.dir
-      size: 537332622
-      nfiles: 17
-    - path: mlruns
-      hash: md5
-      md5: ce16743656c4b42e15ffde03bafdf851.dir
-      size: 3265
-      nfiles: 28
   fine_tune_best_model:
     cmd: python model/fine_tune_best_model.py
     deps:
+    - path: data/news_feed.csv
+      hash: md5
+      md5: e867249fa95c06cfe68947a44aceb700
+      size: 15
     - path: mlartifacts
       hash: md5
-      md5: cf39243d060059bbe01cf4640bdc19bb.dir
-      size: 1075133718
-      nfiles: 34
-    - path: mlruns
-      hash: md5
-      md5: 8cc1ddad18d26e77a3d84f0664fb17e4.dir
-      size: 6011
-      nfiles: 48
+      md5: 59d917d67ff0bce6aeac369d8fa91369.dir
+      size: 2682096814
+      nfiles: 85
     outs:
     - path: metrics/classification_report.json
       hash: md5
-      md5: 2742c129146bcdf35f91aacfabdec2b9
-      size: 782
+      md5: 76eb95df3d6d596e89ca9725bad9ebc7
+      size: 874
     - path: metrics/training_history.json
       hash: md5
-      md5: 3b602bc721b227263b07f9f625b15edd
-      size: 89
+      md5: 2d0fe01c69ef220affae5e4d8dcd6821
+      size: 104
