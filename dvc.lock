@@ -33,19 +33,19 @@ stages:
     params:
       params.yaml:
         model.batch_size:
-        - 50
+        - 32
         - 64
         model.epochs:
-        - 1
+        - 3
         model.lr:
         - 0.0001
         - 0.001
         - 0.01
         model.num_neurons:
-        - 48
+        - 64
+        - 128
         - 256
-        - 512
-        model.runs: 1
+        model.runs: 8
   fine_tune_best_model:
     cmd: python model/fine_tune_best_model.py
     deps:
@@ -55,15 +55,15 @@ stages:
       size: 15
     - path: mlartifacts
       hash: md5
-      md5: 59d917d67ff0bce6aeac369d8fa91369.dir
-      size: 2682096814
-      nfiles: 85
+      md5: 67446cabfa083ca57e7a4d7800bdbf15.dir
+      size: 10195122234
+      nfiles: 323
     outs:
     - path: metrics/classification_report.json
       hash: md5
-      md5: 76eb95df3d6d596e89ca9725bad9ebc7
-      size: 874
+      md5: 33a54c7ca9dcb6cce673392f9cee480a
+      size: 876
     - path: metrics/training_history.json
       hash: md5
-      md5: 2d0fe01c69ef220affae5e4d8dcd6821
+      md5: 501f694ab6361e3baf8a448565ec6d56
       size: 104
