@@ -55,15 +55,15 @@ stages:
       size: 15
     - path: mlartifacts
       hash: md5
-      md5: 67446cabfa083ca57e7a4d7800bdbf15.dir
-      size: 10195122234
-      nfiles: 323
+      md5: c3b43c63a49d587c5d3782b1d9f5988a.dir
+      size: 11804665476
+      nfiles: 374
     outs:
     - path: metrics/classification_report.json
       hash: md5
-      md5: 33a54c7ca9dcb6cce673392f9cee480a
-      size: 876
+      md5: aba3812419c7ed0d3c88a041599f5672
+      size: 782
     - path: metrics/training_history.json
       hash: md5
-      md5: 501f694ab6361e3baf8a448565ec6d56
-      size: 104
+      md5: 3659857bc53c980c128a6000c7e57e7e
+      size: 89

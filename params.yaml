@@ -5,6 +5,7 @@ model:
   epochs: [3]
   runs: 8
 
+#Don't push
 extract_data:
   configuration:
     database: postgres
@@ -27,4 +28,4 @@ extract_data:
     politics: \b(?:politics|election|minister|government|parliament)\b
 
 data:
-  date: '2025-04-29'
+  date: '2025-04-30'

@@ -159,11 +159,11 @@ def build_model_train_model(num_neurons = 512, lr=1e-2, batch_size = 32, num_epo
     ).to(device)
 
     # ====== KEY MODIFICATION ======
-    # 1. Add a new 256-unit layer before the classifier
+    # 1. Add a new num_neurons-unit layer before the classifier
     model.classifier = nn.Sequential(
-        nn.Linear(768, num_neurons),  # New layer (768 -> 256)
+        nn.Linear(768, num_neurons),  # New layer (768 -> num_neurons)
         nn.GELU(),            # Activation
-        nn.Linear(num_neurons, 5)     # Final classifier (256 -> 5 classes)
+        nn.Linear(num_neurons, 5)     # Final classifier (num_neurons -> 5 classes)
     ).to(device)
 
     # 2. Freeze all layers EXCEPT the new classifier
